@@ -23,6 +23,6 @@ jobs:
       - name: Build
         run: docker build -t se_methods .
       - name: Run image
-        run: docker run --network se-methods --name devopscontainer se_methods
+        run: docker run --network se-methods --name devopscontainer se_methods mongo
       - name: view logs
         run: docker logs devopscontainer
