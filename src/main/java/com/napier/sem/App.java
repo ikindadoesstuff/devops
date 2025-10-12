@@ -9,7 +9,7 @@ import org.bson.Document;
 public class App {
     public static void main(String[] args) {
         // Connect to MongoDB on local system using port 27000
-        MongoClient mongoClient = MongoClients.create("mongodb://localhost:27000");
+        MongoClient mongoClient = MongoClients.create("mongodb://mongo-dbserver");
         // Get a database - will create when we use it
         MongoDatabase database = mongoClient.getDatabase("mydb");
         // Get a collection from the database
