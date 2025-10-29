@@ -6,6 +6,17 @@ public class App
 {
     private Connection con = null;
 
+    public static void main(String[] args) {
+        App app = new App();
+
+        app.connect();
+
+        Employee emp = app.getEmployee(255530);
+        app.displayEmployee(emp);
+
+        app.disconnect();
+    }
+
     public void connect()
     {
         try
@@ -60,12 +71,54 @@ public class App
         }
     }
 
-    public static void main(String[] args) {
-        App app = new App();
+    public Employee getEmployee(int ID)
+    {
+        try
+        {
+            Statement statement = con.createStatement();
 
-        app.connect();
+            String strSelect =
+                    "SELECT emp_no, first_name, last_name "
+                    + "FROM employees "
+                    + "WHERE emp_no = " + ID;
 
-        app.disconnect();
+            ResultSet resultSet = statement.executeQuery(strSelect);
+
+            if (resultSet.next())
+            {
+                Employee employee = new Employee();
+                employee.emp_no = resultSet.getInt("emp_no");
+                employee.first_name = resultSet.getString("first_name");
+                employee.last_name = resultSet.getString("last_name");
+                return employee;
+            }
+            else
+                return null;
+        }
+        catch (Exception e)
+        {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get employee details");
+            return null;
+        }
     }
+
+    public void displayEmployee(Employee employee)
+    {
+        if (employee != null)
+        {
+            System.out.println(
+                    employee.emp_no + " "
+                    + employee.first_name + " "
+                    + employee.last_name + "\n"
+                    + employee.title + "\n"
+                    + "Salary: " + employee.salary + "\n"
+                    + employee.dept_name + "\n"
+                    + "Manager: " + employee.manager + "\n"
+            );
+        }
+    }
+
+
 
 }
