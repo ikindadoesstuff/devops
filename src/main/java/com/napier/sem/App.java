@@ -78,9 +78,17 @@ public class App
             Statement statement = con.createStatement();
 
             String strSelect =
-                    "SELECT emp_no, first_name, last_name "
+                    "SELECT employees.emp_no, employees.first_name, employees.last_name, titles.title, " +
+                            "salaries.salary, departments.dept_name, m.first_name AS manager_first_name, " +
+                            "m.last_name AS manager_last_name "
                     + "FROM employees "
-                    + "WHERE emp_no = " + ID;
+                    + "LEFT JOIN titles on employees.emp_no = titles.emp_no AND titles.to_date = '9999-01-01' "
+                    + "LEFT JOIN salaries on employees.emp_no = salaries.emp_no AND salaries.to_date = '9999-01-01' "
+                    + "LEFT JOIN dept_emp on employees.emp_no = dept_emp.emp_no AND dept_emp.to_date = '9999-01-01' "
+                    + "LEFT JOIN departments on dept_emp.dept_no = departments.dept_no "
+                    + "LEFT JOIN dept_manager on dept_emp.dept_no = dept_manager.dept_no AND dept_manager.to_date = '9999-01-01' "
+                    + "LEFT JOIN employees as m on dept_manager.emp_no = m.emp_no "
+                    + "WHERE employees.emp_no = " + ID;
 
             ResultSet resultSet = statement.executeQuery(strSelect);
 
@@ -90,6 +98,12 @@ public class App
                 employee.emp_no = resultSet.getInt("emp_no");
                 employee.first_name = resultSet.getString("first_name");
                 employee.last_name = resultSet.getString("last_name");
+                employee.title = resultSet.getString("title");
+                employee.salary = resultSet.getInt("salary");
+                employee.dept_name = resultSet.getString("dept_name");
+                employee.manager =
+                        resultSet.getString("manager_first_name") +
+                        resultSet.getString("manager_last_name");
                 return employee;
             }
             else
@@ -108,17 +122,25 @@ public class App
         if (employee != null)
         {
             System.out.println(
-                    employee.emp_no + " "
+                    "\n"
+                    + employee.emp_no + " "
                     + employee.first_name + " "
                     + employee.last_name + "\n"
-                    + employee.title + "\n"
-                    + "Salary: " + employee.salary + "\n"
-                    + employee.dept_name + "\n"
+                    + "Title: " + employee.title + "\n"
+                    + "Salary: $" + employee.salary + "\n"
+                    + "Department: " + employee.dept_name + "\n"
                     + "Manager: " + employee.manager + "\n"
             );
         }
     }
-
-
-
 }
+
+//SELECT employees.emp_no, employees.first_name, employees.last_name, titles.title, salaries.salary, departments.dept_name, m.first_name AS manager_first_name, m.last_name AS manager_last_name
+//FROM employees
+//LEFT JOIN titles on employees.emp_no = titles.emp_no AND titles.to_date = '9999-01-01'
+//LEFT JOIN salaries on employees.emp_no = salaries.emp_no AND salaries.to_date = '9999-01-01'
+//LEFT JOIN dept_emp on employees.emp_no = dept_emp.emp_no AND dept_emp.to_date = '9999-01-01'
+//LEFT JOIN departments on dept_emp.dept_no = departments.dept_no
+//LEFT JOIN dept_manager on dept_emp.dept_no = dept_manager.dept_no AND dept_manager.to_date = '9999-01-01'
+//LEFT JOIN employees as m on dept_manager.emp_no = m.emp_no
+//WHERE employees.emp_no = 255530
