@@ -1,4 +1,4 @@
-FROM openjdk:17-oracle
+FROM eclipse-temurin:17-jdk
 COPY ./target/seMethods-0.1.0.3-jar-with-dependencies.jar /tmp
 WORKDIR /tmp
 ENTRYPOINT ["java", "-jar", "seMethods-0.1.0.3-jar-with-dependencies.jar"]
